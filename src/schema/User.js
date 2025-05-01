@@ -6,15 +6,25 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true, trim: true },
   fullname: { type: String, required: true },
   email: { type: String, lowercase: true, required: true, unique: true },
-  password: { type: String, required: true },
+  // password: { type: String, required: true },
+  password: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (value) {
+        return /^\d{8}$/.test(value); // exactly 8 digits
+      },
+      message: 'Password must be exactly 8 digits.',
+    },
+  },
   role: {
     type: String,
     enum: ['CEO', 'Superadmin', 'Admin'],
     default: 'Admin',
   },
   isActive: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now },
-},  {
+  // createdAt: { type: Date, default: Date.now },
+}, {
   timestamps: {
     createdAt: "created_at",
     updatedAt: "updated_at",

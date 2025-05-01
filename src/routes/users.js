@@ -7,11 +7,31 @@ import dotenv from 'dotenv';
 dotenv.config();
 const router = express.Router();
 
-
 router.get('/', async (req, res) => {
-    const users = await User.find();
-    res.json(users);
-})
+  try {
+    const user = await User.find()
+    res.status(200).json({ data: user })
+  } catch (error) {
+    res.status(500).json({ error: error })
+  }
+});
+
+router.get('/me', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ message: 'Token missing' });
+
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select('-password');
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json(user);
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid token', error: err.message });
+  }
+});
 
 router.post('/register', async (req, res) => {
   try {
@@ -51,21 +71,17 @@ router.post('/login', async (req, res) => {
   }
 });
 
-
-router.get('/me', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).json({ message: 'Token missing' });
+    const user = await User.findByIdAndDelete(req.params.id);
 
-    const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-    if (!user) return res.status(404).json({ message: 'User not found' });
-
-    res.json(user);
+    res.json({ message: 'User deleted successfully' });
   } catch (err) {
-    res.status(401).json({ message: 'Invalid token', error: err.message });
+    res.status(500).json({ message: 'Failed to delete user', error: err.message });
   }
 });
 
