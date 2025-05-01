@@ -13,6 +13,7 @@ router.get('/', async (req, res) => {
     res.json(users);
 })
 
+
 router.post('/register', async (req, res) => {
   try {
     const { username, fullname, email, password, role } = req.body;
