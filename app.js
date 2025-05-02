@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import {db} from "./src/db/index.js";
 import userRoutes from "./src/routes/users.js";
+import productRoutes from "./src/routes/product.js";
+
 
 const app = express();
 
@@ -16,6 +18,9 @@ dotenv.config();
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/users", userRoutes);
+// app.use(express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
+app.use(productRoutes)
 
 db();
 app.listen(process.env.PORT, () => {

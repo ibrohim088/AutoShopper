@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const user = await User.find()
-    res.status(200).json({ data: user })
+    res.status(200).json({ data: user });
   } catch (error) {
     res.status(500).json({ error: error })
   }
