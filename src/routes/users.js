@@ -33,6 +33,7 @@ router.get('/me', async (req, res) => {
   }
 });
 
+
 router.post('/register', async (req, res) => {
   try {
     const { username, fullname, email, password, role } = req.body;
