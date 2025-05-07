@@ -3,7 +3,6 @@
 import express from "express";
 import { upload } from "../shared/multer.js";
 import Product from "../schema/Product.js";  // Adjust this path according to your project structure
-
 const router = express.Router();
 
 // GET all products
@@ -30,7 +29,7 @@ router.get("/product/:id", async (req, res) => {
 });
 
 // POST create new product
-router.post("/product", upload.single("image"), async (req, res) => {
+router.post("/product" , upload.single("image"), async (req, res) => {
   try {
     const { name, price, description } = req.body;
 

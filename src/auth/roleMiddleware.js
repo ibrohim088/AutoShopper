@@ -5,7 +5,6 @@ module.exports = function (requiredRole) {
       if (!user || user.role !== requiredRole) {
         return res.status(403).json({ message: 'Access denied' });
       }
-  
       next();
     };
   };
