@@ -18,8 +18,9 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['CEO', 'Superadmin', 'Admin'],
-    default: 'Admin',
+    // enum: ['CEO', 'Superadmin', 'Admin'],
+    // default: 'Admin',
+    default: 'User',
   },
   isActive: { type: Boolean, default: true },
   // createdAt: { type: Date, default: Date.now },
