@@ -1,15 +1,57 @@
-// controllers/order.js
-import Order from '../schema/Order.js'; // adjust the path if needed
+import Order from '../schema/Order.js'; // путь к модели Order
 
 // Get all orders
+// export const getOrders = async (req, res) => {
+//   try {
+//     const orders = await Order.find()
+//       .populate('userId', 'fullname') // Populating userId
+//       .populate('productId', 'name price') // Populating productId
+//       .populate('categoryId', 'name'); // Populating categoryId
+
+//     const formattedOrders = orders.map(order => ({
+//       _id: order._id,
+//       user: order.userId?.fullname || null,
+//       product: order.productId?.name || null,
+//       category: order.categoryId?.name || null,
+//       quantity: order.quantity,
+//       price: order.price,
+//       status: order.status,
+//       date: order.date,
+//       created_at: order.created_at,
+//       updated_at: order.updated_at,
+//     }));
+
+//     res.status(200).json(formattedOrders);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
 export const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find();
-    res.status(200).json(orders);
+    const orders = await Order.find()
+      .populate('userId', 'fullname')
+      .populate('productId', 'name price')
+      .populate('categoryId', 'name');
+
+    const formattedOrders = orders.map(order => ({
+      _id: order._id,
+      user: order.userId?.fullname || 'Unknown User',
+      product: order.productId?.name || 'Unknown Product',
+      category: order.categoryId?.name || 'Unknown Category',
+      quantity: order.quantity,
+      price: order.price,
+      status: order.status,
+      date: order.date,
+      created_at: order.created_at,
+      updated_at: order.updated_at,
+    }));
+
+    res.status(200).json(formattedOrders);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // Create a new order
 export const createOrder = async (req, res) => {
