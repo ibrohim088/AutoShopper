@@ -2,9 +2,16 @@ import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, unique: true, trim: true },
+    name: String,
+  price: Number,
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: true
+  },
     description: { type: String, required: true },
     image: { type: String, required: true },
+    
     isActive: { type: Boolean, default: true },
   },
   {
