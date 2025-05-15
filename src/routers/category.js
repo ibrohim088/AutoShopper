@@ -1,6 +1,7 @@
 import express from 'express';
 import Category from '../schema/Category.js';
 import {upload} from '../shared/multer.js';
+import Product from '../schema/Product.js';
 
 
 const router = express.Router();
@@ -9,11 +10,22 @@ const router = express.Router();
 router.get('/category', async (req, res) => {
   try {
     const categories = await Category.find();
-    res.status(200).json({ data: categories });
+    const categoriesWithProducts = await Promise.all(
+      categories.map(async (category) => {
+        const products = await Product.find({ category: category._id });
+        return {
+          ...category.toObject(),
+          products,
+        };
+      })
+    );
+
+    res.status(200).json({ data: categoriesWithProducts });
   } catch (error) {
     res.status(500).json({ error: 'Error: ' + error.message });
   }
 });
+
 
 // GET category by ID
 router.get('/category/:id', async (req, res) => {
@@ -22,11 +34,21 @@ router.get('/category/:id', async (req, res) => {
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
-    res.status(200).json({ data: category });
+
+    const products = await Product.find({ category: category._id });
+
+    res.status(200).json({
+      data: {
+        category,
+        products,
+      }
+    });
   } catch (error) {
+    console.error('Error fetching category with products:', error);
     res.status(500).json({ error: 'Error: ' + error.message });
   }
 });
+
 
 // POST create new category
 router.post('/category', upload.single('image'), async (req, res) => {
